@@ -10,7 +10,7 @@
 DIR_CUR = $(shell pwd)
 KERNEL_ROOT = $(DIR_CUR)/../
 BZIMAGE = $(KERNEL_ROOT)/arch/x86/boot/bzImage
-# mkinitramfs -o ramdisk.img
+# mkinitramfs -o auto_ramdisk.img
 AUTO_RAMDISK = $(DIR_CUR)/auto_ramdisk.img
 # manual initrmfs
 # find . -print0 | cpio --null -ov --format=newc | gzip -9 > ../manual_ramdisk.img
@@ -85,10 +85,25 @@ dn:
 dnvme:
 	$(QEMU) $(PARAMETER) $(NVMe_PARAMETER)
 
+
 # 利用mkinitramfs生成一个默认的initrmdisk
 GEN_AUTO_RAMDISK = $(shell mkinitramfs -o auto_ramdisk.img)
 aud:
 	@echo $(GEN_AUTO_RAMDISK)
+
+# 8G
+GEN_DISK_BACKEND = $(shell mkdir -p disk && dd if=/dev/zero of=./disk/disk.img bs=2048 count=4096)
+gdk:
+	@echo $(GEN_DISK_BACKEND)
+
+GEN_NVME_BACKEND = $(shell mkdir -p nvme && dd if=/dev/zero of=./nvme/nvme.img bs=2048 count=4096)
+gnvme:
+	@echo $(GEN_NVME_BACKEND)
+
+GEN_NVDIMM_BACKEND = $(shell mkdir -p nvdimm && truncate -s 8G nvdimmdaxfile)
+gnvdimm:
+	@echo $(GEN_NVDIMM_BACKEND)
+
 
 # 利用busybox手动生成initrmfs，需要在initrmfs下执行
 # @ 一行只能有一个
