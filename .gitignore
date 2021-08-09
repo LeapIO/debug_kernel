@@ -50,3 +50,13 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# something in debug kernel
+build_ramdisk/initrmfs/dev
+build_ramdisk/manual_ramdisk.img
+nvdimm/
+nvme/
+disk/
+auto_ramdisk.img
+codesnip/bin
+*.d
