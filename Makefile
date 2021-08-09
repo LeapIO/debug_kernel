@@ -71,6 +71,11 @@ help:
 	@echo make dk  -- start debug kernel with a disk device in /dev
 	@echo make dn  -- start debug nvdimm with a nvdimm device in /dev
 	@echo make dnvme  -- start debug nvme ssd with a nvme ssd device in /dev
+	@echo make mad -- gen manual ramdisk.img
+	@echo make aud -- gen auto ramdisk.img
+	@echo make gdk -- gen disk.img
+	@echo make gnvme -- gen nvme.img
+	@echo make gnvdimm -- gen nvdimm file
 
 # default target and cgdb -q -x gdbinit in another termianl
 # dk means means debug kernel
