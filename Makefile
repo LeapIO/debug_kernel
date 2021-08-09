@@ -4,7 +4,7 @@
 # change kernel code, commit log:
 # 	populated kernel src + xxxxx
 
-# cgdb -q -x gdbinit q与x的顺序还得必须是这样的
+# cgdb -q -x gdbinit q 与 x 的顺序还得必须是这样的
 
 # path
 DIR_CUR = $(shell pwd)
