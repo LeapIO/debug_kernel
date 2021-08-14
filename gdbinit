@@ -15,4 +15,5 @@ target remote:1234
 # b do_fchmodat
 # b ata_scsi_scan_host
 # b blk_mq_init_sq_queue
+b nvme_probe
 c
