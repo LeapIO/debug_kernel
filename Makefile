@@ -36,10 +36,21 @@ PARAMETER += -append "console=ttyS0 nokaslr"  # kernel cmdline
 # i meet a problem, Could not access KVM kernel module: No such file or directory
 # maybe i need to enter bios to enable virtualization
 # PARAMETER += --enable-kvm
-# -m configure guest RAM 客户机, host共计4G内存
-PARAMETER += -m 2G,slots=4,maxmem=16G
-# 指定qemu虚拟机的核心数
-PARAMETER += -smp 1
+# -m configure guest RAM 客户机
+PARAMETER += -m 8G,slots=4,maxmem=16G \
+-object memory-backend-ram,id=mem0,size=2G \
+-object memory-backend-ram,id=mem1,size=2G \
+-object memory-backend-ram,id=mem2,size=2G \
+-object memory-backend-ram,id=mem3,size=2G
+
+# 指定 qemu 虚拟机的核心数 并且指定 numa node topology
+# https://futurewei-cloud.github.io/ARM-Datacenter/qemu/how-to-configure-qemu-numa-nodes/
+PARAMETER += -smp 16 \
+-numa node,memdev=mem0,cpus=0-3,nodeid=0 \
+-numa node,memdev=mem1,cpus=4-7,nodeid=1 \
+-numa node,memdev=mem2,cpus=8-11,nodeid=2 \
+-numa node,memdev=mem3,cpus=12-15,nodeid=3
+
 # PARAMETER += -cpu host
 # -S pause the kernel unit we continue in gdb
 # -s start gdbserver on port 1234
@@ -53,12 +64,17 @@ NVDIMM_PARAMETER += -object memory-backend-file,id=mem1,share=on,mem-path=$(BACK
 # mem1的4G后备存储设备是host中的基于ext4文件系统的文件
 NVDIMM_PARAMETER += -device nvdimm,id=nv1,memdev=mem1
 
+# https://qemu-project.gitlab.io/qemu/system/devices/nvme.html?highlight=nvme
+# 	qemu 文档 nvme 参数
 # qemu 模拟nvme所需的独立参数
 # file: This option defines which disk image (see disk_images) to use with this drive
 # if=type: This option defines on which type on interface the drive is connected. Available types are:
 # 	ide, scsi, sd, mtd, floppy, pflash, virtio, none.
+# num_queues meads 
+# 	Set the maximum number of allowed I/O queue pairs IO 队列的数量确实是SSD所决定的，包括每一个队列的队列深度，位于pcie的bar空间上
+#	实际上这个值在驱动初始化的是是可以作为 参数 给进去的
 BACKEDN_NVMe_PATH = $(DIR_CUR)/nvme/nvme.img
-NVMe_PARAMETER := -drive file=$(BACKEDN_NVMe_PATH),if=none,id=D22 -device nvme,drive=D22,serial=1234
+NVME_PARAMETER := -drive file=$(BACKEDN_NVMe_PATH),if=none,id=D22 -device nvme,drive=D22,serial=1234,num_queues=128
 
 # qemu模拟一个disk设备给busybox用
 # By default, interface is "ide" and index is automatically incremented
@@ -88,8 +104,7 @@ dn:
 
 #debug nvme ssd
 dnvme:
-	$(QEMU) $(PARAMETER) $(NVMe_PARAMETER)
-
+	$(QEMU) $(PARAMETER) $(NVME_PARAMETER)
 
 # 利用mkinitramfs生成一个默认的initrmdisk
 GEN_AUTO_RAMDISK = $(shell mkinitramfs -o auto_ramdisk.img)
@@ -97,18 +112,17 @@ aud:
 	@echo $(GEN_AUTO_RAMDISK)
 
 # 8G
-GEN_DISK_BACKEND = $(shell mkdir -p disk && dd if=/dev/zero of=./disk/disk.img bs=2048 count=4096)
+GEN_DISK_BACKEND = $(shell mkdir -p disk && dd if=/dev/zero of=./disk/disk.img bs=2048 count=4096K)
 gdk:
 	@echo $(GEN_DISK_BACKEND)
 
-GEN_NVME_BACKEND = $(shell mkdir -p nvme && dd if=/dev/zero of=./nvme/nvme.img bs=2048 count=4096)
+GEN_NVME_BACKEND = $(shell mkdir -p nvme && dd if=/dev/zero of=./nvme/nvme.img bs=2048 count=4096K)
 gnvme:
 	@echo $(GEN_NVME_BACKEND)
 
 GEN_NVDIMM_BACKEND = $(shell mkdir -p nvdimm && truncate -s 8G nvdimmdaxfile)
 gnvdimm:
 	@echo $(GEN_NVDIMM_BACKEND)
-
 
 # 利用busybox手动生成initrmfs，需要在initrmfs下执行
 # @ 一行只能有一个
