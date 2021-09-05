@@ -46,10 +46,12 @@ $(BIN_DIR)/client: client.cc
 	$(CXX) $(CFLAGS) $^ -o $@ $(INCLUDESFLAGS) $(LDFLAGS)
 
 # 拷贝bin/example下的可执行文件到initramfs中
-TARGET_DIR = $(PWD)/../../build_ramdisk/initrmfs/double_D/testutils
-CP = $(shell cp $(EXE) $(TARGET_DIR))
-exp: $(CP)
-	@echo export successfully
+# 这个路径是会改变的，要注意调整
+# ...
+# TARGET_DIR = $(PWD)/../../build_ramdisk/initrmfs/double_D/testcase
+# CP = $(shell cp $(EXE) $(TARGET_DIR))
+# exp: $(CP)
+# 	@echo export successfully
 
 .PHONY:test
 test:

@@ -7,7 +7,9 @@ SUB_DIRS := $(patsubst include,,$(SUB_DIRS))
 
 include $(MKS_DIR)/gensrc.mk
 
-INCLUDEFLAGS += -I$(shell pwd) # 源码下会写a.cpp对应的a.h头文件
+# 源码下会写a.cpp对应的a.h头文件
+INCLUDEFLAGS += -I$(shell pwd)
+# $(info $(INCLUDEFLAGS))
 
 all: $(SUB_DIRS) $(MODULE)
 

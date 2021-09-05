@@ -4,8 +4,8 @@
 $(SUB_DIRS): ECHO
 	$(MAKE) -C $@
 ECHO:
-	# TODO i do not understand
 	@echo Compiling $(SUB_DIRS)
+# TODO i do not understand
 
 %.o:%.cc
 	$(CXX) -c $< -o $@ $(CFLAGS) $(INCLUDEFLAGS)

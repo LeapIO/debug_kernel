@@ -15,4 +15,5 @@
 #include <thread>
 #include "syscallwrap.h"
 #include "snip.h"
+#include "common/threadpool.h"
 #endif

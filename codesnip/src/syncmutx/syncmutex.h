@@ -11,6 +11,7 @@
 #ifndef _MM_H
 #define _MM_H
 #include "snip.h"
+#include "common/rwlock.h"
 
 #define SMALL_CA 1000  // 小规模临界区代码行数
 #define HUGE_CA 100000000  // 大规模临界区代码行数

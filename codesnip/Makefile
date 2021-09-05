@@ -7,15 +7,16 @@ default: all
 	@cd src && $(MAKE) $@
 	@cd example && $(MAKE) $@
 
+# make后面的参数是什么，$@ 就是什么
 .PHONY:example
 example:
-	# @cd example && $(MAKE) $@
 	$(MAKE) -C $@
+# @cd example && $(MAKE) $@
 
 .PHONY:src
 src:
-	# @cd src && $(MAKE) $@
 	$(MAKE) -C $@
+# @cd src && $(MAKE) $@
 
 .PHONY:clean
 clean:
