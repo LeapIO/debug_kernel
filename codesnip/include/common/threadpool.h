@@ -12,14 +12,18 @@
 #include <functional>
 #include <stdexcept>
 
-class ThreadPool 
+class ThreadPool
 {
 public:
     // the constructor just launches some amount of workers
     ThreadPool(size_t threads) : stop(false)
     {
-        for(size_t i = 0;i<threads;++i)
+        for(size_t i = 0;i<threads;++i) {
+            // std::vector<std::thread> workers;
             workers.emplace_back(
+                // lambda函数前面的方括号指定哪些变量被lambda捕获
+                // 捕获意味着可以在lambda内部处理lambda外部的变量
+                // 在类内部可以捕获this, 然后调用类方法
                 [this]
                 {
                     for(;;)
@@ -34,16 +38,19 @@ public:
                             task = std::move(this->tasks.front());
                             this->tasks.pop();
                         }
-
                         task();
                     }
                 }
             );
+        }
     }
 
     template<class F, class... Args>
     auto enqueue(F&& f, Args&&... args) 
         -> std::future<typename std::result_of<F(Args...)>::type>;
+
+    ThreadPool(const ThreadPool &) = delete;
+    ThreadPool &operator=(const ThreadPool &) = delete;
 
     // the destructor joins all threads
     ~ThreadPool()
@@ -56,9 +63,6 @@ public:
         for(std::thread &worker: workers)
             worker.join();
     }
-
-    ThreadPool(const ThreadPool &) = delete;
-    ThreadPool &operator=(const ThreadPool &) = delete;
 private:
     // need to keep track of threads so we can join them
     std::vector<std::thread> workers;
