@@ -113,6 +113,10 @@ int
 RunThreadPool()
 {
     ThreadPool pool(4);
+
+	return 0;
+
+
     std::vector<std::future<int>> results;
 
     for(int i = 0; i < 8; ++i) {
@@ -138,7 +142,7 @@ RunThreadPool()
  */
 void 
 SysCall::LWP(){
-	process_thread_area::ForkProAndCreateT();
+	// process_thread_area::ForkProAndCreateT();
     process_thread_area::RunThreadPool();
 	return;
 }
