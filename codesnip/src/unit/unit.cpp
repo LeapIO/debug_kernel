@@ -21,3 +21,10 @@ bool snip_utils::StringIsDigit(const std::string& str){
 	if (sin >> c) return false;
 	return true;
 }
+
+unsigned long long snip_utils::GetCurrentMillisecs()
+{
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC_COARSE, &ts);
+    return ts.tv_sec * 1000 + ts.tv_nsec / (1000 * 1000);
+}

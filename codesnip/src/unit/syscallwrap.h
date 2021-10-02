@@ -20,7 +20,9 @@
  * @copyright Copyright double_D
  * 
  */
+#include <sys/syscall.h>
 #include <sys/socket.h>
+#include <poll.h>
 #include <netinet/in.h>
 #include <sys/un.h>
 #include <signal.h>
@@ -40,9 +42,12 @@ int Accept(int, struct sockaddr*, socklen_t*);
 void Listen(int, int);
 void Connect(int, const struct sockaddr*, socklen_t);
 void Bind(int, const struct sockaddr*, socklen_t);
+int Select(int, fd_set*, fd_set*, fd_set*, struct timeval*);
+int Poll(struct pollfd *, unsigned long, int);
 /* end socket */
 /* begin IO */
 ssize_t Readn(int, void *, size_t);
+ssize_t Read(int, void*, size_t);
 void Writen(int, void *, size_t);
 /* end IO */
 /* begin IPC */

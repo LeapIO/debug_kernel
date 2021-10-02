@@ -11,13 +11,24 @@
 #ifndef _NET_H
 #define _NET_H
 #include <arpa/inet.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <sys/epoll.h>
+#include <thread>
 #include "syscallwrap.h"
 #include "snip.h"
+#include "common/threadpool.h"
+#include "unit.h"
+
 
 #define SERVER_SOCK_PORT 6666  // 一个随机的网络端口号
 #define LISTENQ 8  // TCP监听队列的长度上限为8，超过上限,服务器主动抛弃，且等待客户端的重传
 #define LOCAL_IP "127.0.0.1"
 #define AUTO_INCREMENT_UP_LIMIT 1 << 48
+#define OPEN_MAX 1024  // 1024指代一个进程在任意时刻能打开的最大描述符数目
+#define INFTIM -1
+#define MAXFDS 16 * 1024
+#define MAX_EVENTS 10
 
 struct init_in_pub{
     int listenfd;
@@ -84,9 +95,14 @@ namespace network_area{
     struct init_un_pub* InitUnServer();  // 本地
     struct init_in_pub* InitInServer();  // 网络
     void Client();
+    void SingleClient();
     void RunNetwork();
     void Doit(int);
+    void DoUseFd(int);
     void MultiProcessServer();
+    void ThreadPools();
     void SelectServer();
+    void PollServer();
+    void EPollServer();
 }
 #endif

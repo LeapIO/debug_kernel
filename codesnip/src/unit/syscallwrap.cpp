@@ -91,7 +91,7 @@ restart:
     int clisockfd = accept(sockfd, cliaddr, addrlen);
     if(clisockfd < 0){
         if(errno==EINTR){goto restart;}
-        perror("accept error!");
+        perror("accept error!\n");
         exit(errno);
     }
     return clisockfd;
@@ -107,9 +107,50 @@ restart:
 void
 Connect(int sockfd, const struct sockaddr* servaddr, socklen_t addrlen){
     if(connect(sockfd, servaddr, addrlen)<0){
-        perror("connect error!");
+        perror("connect error!\n");
         exit(errno);
     }
+}
+
+/**
+ * @brief 
+ * @param  nfds             desc
+ * @param  readfds          desc
+ * @param  writefds         desc
+ * @param  exceptfds        desc
+ * @param  timeout          desc
+ * @return int @c 
+ */
+int
+Select(
+    int nfds, 
+    fd_set *readfds, fd_set *writefds, fd_set *exceptfds,
+    struct timeval *timeout)
+{
+	int n;
+	if((n = select(nfds, readfds, writefds, exceptfds, timeout))<0){
+        perror("select error\n");;
+    }
+	return(n);		/* can return 0 on timeout */
+}
+
+/**
+ * @brief poll
+ * int poll(struct pollfd *fds, nfds_t nfds, int timeout)
+ * poll与select没有本质上的区别
+ * @param  fdarray          desc 文件描述符的数组
+ * @param  nfds             desc 数组个数
+ * @param  timeout          desc 超时时间
+ * @return int @c
+ */
+int
+Poll(struct pollfd *fdarray, unsigned long nfds, int timeout)
+{
+	int n;
+	if((n = poll(fdarray, nfds, timeout)) < 0){
+        perror("poll error\n");
+    }
+	return(n);
 }
 /* end socket */
 
@@ -173,9 +214,7 @@ readn(int fd, void *vptr, size_t n){
         nread=read(fd, ptr, nleft);  /// 返回已读取的自己数
         if(nread<0){
             if(errno==EINTR){nread=0;} /// call read again
-            else{
-                return -1;
-            }
+            else{return -1;}
         }else if(nread==0){
             /// EOF
             break;

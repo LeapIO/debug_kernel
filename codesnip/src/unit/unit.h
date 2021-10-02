@@ -26,5 +26,6 @@ namespace snip_utils {
             bzero(buff, USER_BUFF_SIZE);
         }
     };
+    unsigned long long GetCurrentMillisecs();
 }
 #endif

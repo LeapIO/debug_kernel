@@ -24,8 +24,9 @@ SUB_DIRS := $(patsubst include,,$(SUB_DIRS))
 MKS_DIR = $(CUR_DIR)/../mks/
 
 # some flags
-CFLAGS := -g -Wall -O
-LDFLAGS := -lpthread -static
+CFLAGS := -g -Wall -O -Wno-reorder
+LDFLAGS := -lpthread
+# -static
 INCLUDEFLAGS := -I$(INCLUDES_DIR) -I$(DIR_SRC) -I$(DIR_UNIT)
 
 BIN := codesnip

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <mutex>
 #include <climits>
 #include <condition_variable>

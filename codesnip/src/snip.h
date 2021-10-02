@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <sys/time.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h> 
@@ -52,7 +53,6 @@ public:
 	static void SyncMutex();  // 互斥与同步
 	static void FS();  // 文件系统相关的内容
 	/// ...
-	// static void TestCase();  /// 码代码的时候发现有小细节不太清楚，就来这里跑一下
 };
 
 /**
@@ -85,7 +85,7 @@ public:
 		 * 	the concurrent execution shall wait for completion of the initialization.
 		 * 所以是线程安全的，由于是static，也无需清理 delete
 		 */
-		static Snip snip(0,1,2, 0);  /// 定义了一个类的实例，构造函数执行初始化，即使调用多次，也仅仅执行一次
+		static Snip snip(0,1,2,0);  /// 定义了一个类的实例，构造函数执行初始化，即使调用多次，也仅仅执行一次
 		return snip;
 	}
 	void ShowUsage();

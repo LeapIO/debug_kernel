@@ -95,13 +95,28 @@ Snip::ParaArgs(int argc, char* argv[]){
 void 
 Snip::ShowUsage(){
 	std::cout 
-	<< "Usage: only one arg need to match cahr* or 2-fork, etc" << std::endl
-	<< "for example: ./snip 2-fork" << std::endl
-	<< "CsBase" << std::endl
-	<< "	coll: 字面值常量,大小端检查，野指针，static用法等"  << std::endl
-	<< "SysCall" << std::endl
-	<< "	pm: fork进程并创建线程"  << std::endl
-	<< std::endl;
+        << "First level: lwp, net, ipc, sm(sync and mutex), fs" << std::endl 
+        << "Second Level: servert=/blockiot=/ipct=/fsapit=" << std::endl
+        << "    server type=" << std::endl
+        << "        0:multi processes" << std::endl
+        << "        1:single process multi threads" << std::endl
+        << "        2:select" << std::endl
+        << "        3:poll" << std::endl
+        << "        4:epoll" << std::endl
+        << "    blockio type=" << std::endl
+        << "        0:no blocking" << std::endl
+        << "        1:blocking" << std::endl
+        << "    ipc type=" << std::endl
+        << "        0:pipe" << std::endl
+        << "        1:named pipe" << std::endl
+        << "        2:semaphore" << std::endl
+        << "        3:signal" << std::endl
+        << "        4:msg queue" << std::endl
+        << "        5:shared memory" << std::endl
+        << "        6:sockets" << std::endl
+        << "    fs api type=" << std::endl
+        << "        1:inotify" << std::endl
+        << std::endl;
 	return;
 }
 
