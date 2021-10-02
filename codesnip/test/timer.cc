@@ -83,8 +83,3 @@ int main()
     while(true);
     worker.join();
 }
-
-
-// std::future<int> f=std::async(some_task);
-// if(f.wait_for(std::chrono::milliseconds(35))==std::future_status::ready)
-//   do_something_with(f.get());
