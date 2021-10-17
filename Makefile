@@ -107,12 +107,14 @@ dnvme:
 	$(QEMU) $(PARAMETER) $(NVME_PARAMETER)
 
 # 利用mkinitramfs生成一个默认的initrmdisk
+# 这个在ubuntu的docker container中会有问题
 GEN_AUTO_RAMDISK = $(shell mkinitramfs -o auto_ramdisk.img)
 aud:
 	@echo $(GEN_AUTO_RAMDISK)
 
 # 8G
-GEN_DISK_BACKEND = $(shell mkdir -p disk && dd if=/dev/zero of=./disk/disk.img bs=2048 count=4096K)
+# mac 2G
+GEN_DISK_BACKEND = $(shell mkdir -p disk && dd if=/dev/zero of=./disk/disk.img bs=2048 count=1024K)
 gdk:
 	@echo $(GEN_DISK_BACKEND)
 

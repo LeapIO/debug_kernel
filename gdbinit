@@ -1,5 +1,5 @@
-file /home/doubled/double_D/linux/vmlinux
-# file /usr/src/linux/vmlinux
+# file /home/doubled/double_D/linux/vmlinux
+file /usr/src/linux/vmlinux
 target remote:1234
 # b start_kernel
 
