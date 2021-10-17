@@ -108,6 +108,36 @@ ForkProAndCreateT(){
     }
     return;
 }
+<<<<<<< HEAD
+=======
+
+int
+RunThreadPool()
+{
+    ThreadPool pool(4);
+
+	return 0;
+
+
+    std::vector<std::future<int>> results;
+
+    for(int i = 0; i < 8; ++i) {
+        results.emplace_back(
+            pool.enqueue([i] {
+                std::cout << "hello " << i << std::endl;
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                std::cout << "world " << i << std::endl;
+                return i*i;
+            })
+        );
+    }
+
+    for(auto && result: results)
+        std::cout << result.get() << ' ';
+    std::cout << std::endl;
+    return 0;
+}
+>>>>>>> e03b4971d8d8aba0871676f1dd61841f9fd1e3c6
 }
 
 /**
@@ -115,6 +145,11 @@ ForkProAndCreateT(){
  */
 void 
 SysCall::LWP(){
+<<<<<<< HEAD
 	process_thread_area::ForkProAndCreateT();
+=======
+	// process_thread_area::ForkProAndCreateT();
+    process_thread_area::RunThreadPool();
+>>>>>>> e03b4971d8d8aba0871676f1dd61841f9fd1e3c6
 	return;
 }
