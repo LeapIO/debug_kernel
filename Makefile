@@ -84,6 +84,7 @@ DISK_PARAMETER := -drive file=$(BACKEDN_DISK_PATH)
 
 .PHONY:help
 help:
+	@echo make dr  -- start debug kernel withnot dev
 	@echo make dk  -- start debug kernel with a disk device in /dev
 	@echo make dn  -- start debug nvdimm with a nvdimm device in /dev
 	@echo make dnvme  -- start debug nvme ssd with a nvme ssd device in /dev
@@ -92,6 +93,9 @@ help:
 	@echo make gdk -- gen disk.img
 	@echo make gnvme -- gen nvme.img
 	@echo make gnvdimm -- gen nvdimm file
+
+dr:
+	$(QEMU) $(PARAMETER)
 
 # default target and cgdb -q -x gdbinit in another termianl
 # dk means means debug kernel
