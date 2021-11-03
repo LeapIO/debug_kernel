@@ -42,7 +42,9 @@ PARAMETER += -m 8G,slots=4,maxmem=16G \
 -object memory-backend-ram,id=mem1,size=2G \
 -object memory-backend-ram,id=mem2,size=2G \
 -object memory-backend-ram,id=mem3,size=2G
-
+# 虚一下网卡，hostfwd 该选项可以把虚拟机端口 guest_port 映射到主机端口 host_port 上，从而实现外部对虚拟机的访问
+PARAMETER += -net nic,model=virtio \
+-net user,hostfwd=tcp::2222-:22
 # 指定 qemu 虚拟机的核心数 并且指定 numa node topology
 # https://futurewei-cloud.github.io/ARM-Datacenter/qemu/how-to-configure-qemu-numa-nodes/
 PARAMETER += -smp 16 \
