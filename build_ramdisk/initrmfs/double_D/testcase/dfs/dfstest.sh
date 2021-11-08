@@ -31,8 +31,8 @@ waitforjobs() {
     # wait -n means wait for next
     # jobs is a shell builtin 
     while test $(jobs -p | wc -w) -ge "$1"; do 
-        # waittimes=$(($waittimes+1)) 
-        # echo "wait for ... $waittimes"
+        waittimes=$(($waittimes+1)) 
+        echo "wait for ... $waittimes"
         wait -n;
     done
 }

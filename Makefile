@@ -50,11 +50,12 @@ PARAMETER += -net nic,model=e1000 \
 -net user,hostfwd=tcp::2222-:22
 # 指定 qemu 虚拟机的核心数 并且指定 numa node topology
 # https://futurewei-cloud.github.io/ARM-Datacenter/qemu/how-to-configure-qemu-numa-nodes/
-PARAMETER += -smp 16 \
--numa node,memdev=mem0,cpus=0-3,nodeid=0 \
--numa node,memdev=mem1,cpus=4-7,nodeid=1 \
--numa node,memdev=mem2,cpus=8-11,nodeid=2 \
--numa node,memdev=mem3,cpus=12-15,nodeid=3
+PARAMETER += -smp 4 
+#\#
+# -numa node,memdev=mem0,cpus=0-3,nodeid=0 \#
+# -numa node,memdev=mem1,cpus=4-7,nodeid=1 \#
+# -numa node,memdev=mem2,cpus=8-11,nodeid=2 \#
+# -numa node,memdev=mem3,cpus=12-15,nodeid=3
 
 # PARAMETER += -cpu host
 # -S pause the kernel unit we continue in gdb

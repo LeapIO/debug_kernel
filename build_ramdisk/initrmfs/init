@@ -1,7 +1,7 @@
 #!/bin/busybox sh
 mount -t proc proc /proc  # -t means type
 mount -t sysfs sysfs /sys
-mount -t debugfs nodev /sys/kernel/debug
+mount -t debugfs nodev /sys/kernel/debug  # debugfs /sys/kernel/debug下会有trace数据
 # /proc/sys/kernel # cat hotplug 
 # /sbin/mdev
 /bin/echo /sbin/mdev > /proc/sys/kernel/hotplug

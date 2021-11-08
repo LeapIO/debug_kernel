@@ -1,5 +1,5 @@
-file /home/doubled/double_D/linux/vmlinux
-# file /usr/src/linux/vmlinux
+# file /home/doubled/double_D/linux/vmlinux
+file /usr/src/linux/vmlinux
 target remote:1234
 # b start_kernel
 
@@ -22,4 +22,5 @@ target remote:1234
 # b nvme_probe
 # b nvme_alloc_ns
 # b nvme_dev_add
+b trace_sched_process_hang
 c
