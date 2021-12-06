@@ -2,7 +2,6 @@
 file /usr/src/linux/vmlinux
 target remote:1234
 # b start_kernel
-
 # open syscall
 # b do_sys_open if strcmp(filename,"open")==0  # always mode=0 or mode=436
 # b do_sys_open if strstr(filename,"opentest")
