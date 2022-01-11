@@ -22,5 +22,5 @@ target remote:1234
 # b nvme_alloc_ns
 # b nvme_dev_add
 # b trace_sched_process_hang
-b pci_arch_init
+# b pci_arch_init
 c
