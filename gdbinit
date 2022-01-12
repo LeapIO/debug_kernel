@@ -1,5 +1,6 @@
 # file /home/doubled/double_D/linux/vmlinux
-file /usr/src/linux/vmlinux
+# file /usr/src/linux/vmlinux
+file /home/founder/hba/linux/linux/vmlinux
 target remote:1234
 # b start_kernel
 # open syscall
@@ -23,4 +24,7 @@ target remote:1234
 # b nvme_dev_add
 # b trace_sched_process_hang
 # b pci_arch_init
+# b drivers/scsi/mpt3sas/mpt3sas_scsih.c:10413
+b _scsih_probe
+b megasas_probe_one
 c

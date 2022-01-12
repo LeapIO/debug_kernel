@@ -88,12 +88,18 @@ NVME_PARAMETER := -drive file=$(BACKEDN_NVMe_PATH),if=none,id=D22 -device nvme,d
 BACKEDN_DISK_PATH = $(DIR_CUR)/disk/disk.img
 DISK_PARAMETER := -drive file=$(BACKEDN_DISK_PATH)
 
+# qemu将主机的PCIe HBA通过vfio的方式传递给qemu内的虚拟机
+HBA_HOST := 0000:01:00.0  # 这个换了设备是需要update的
+HBA_PARAMETER_1 := --enable-kvm  # 如果有这个参数则需要hbreak打硬件断点才可以
+HBA_PARAMETER_2 := -device vfio-pci,host=$(HBA_HOST)
+
 .PHONY:help
 help:
 	@echo make dr  -- start debug kernel withnot dev
 	@echo make dk  -- start debug kernel with a disk device in /dev
 	@echo make dn  -- start debug nvdimm with a nvdimm device in /dev
 	@echo make dnvme  -- start debug nvme ssd with a nvme ssd device in /dev
+	@echo make dhba  -- start debug pcie scsi host, hba
 	@echo make mad -- gen manual ramdisk.img
 	@echo make aud -- gen auto ramdisk.img
 	@echo make gdk -- gen disk.img
@@ -112,9 +118,15 @@ dk:
 dn:
 	$(QEMU) $(PARAMETER) $(NVDIMM_PARAMETER)
 
-#debug nvme ssd
+# debug nvme ssd
 dnvme:
 	$(QEMU) $(PARAMETER) $(NVME_PARAMETER)
+
+# debug pci hba scsi
+# 主要是要把主机的PCIe设备透传过来
+# $(HBA_PARAMETER_1)
+dhba:
+	$(QEMU) $(PARAMETER) $(HBA_PARAMETER_2)
 
 # 利用mkinitramfs生成一个默认的initrmdisk
 # 这个在ubuntu的docker container中会有问题
