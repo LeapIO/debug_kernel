@@ -1,6 +1,7 @@
 # file /home/doubled/double_D/linux/vmlinux
 # file /usr/src/linux/vmlinux
 file /home/founder/hba/linux/linux/vmlinux
+source /home/founder/hba/linux/linux/vmlinux-gdb.py
 target remote:1234
 # b start_kernel
 # open syscall
@@ -25,6 +26,20 @@ target remote:1234
 # b trace_sched_process_hang
 # b pci_arch_init
 # b drivers/scsi/mpt3sas/mpt3sas_scsih.c:10413
-b _scsih_probe
-b megasas_probe_one
+# b _scsih_probe
+# b megasas_probe_one
+# b drivers/scsi/megaraid/megaraid_sas_base.c:7384
+# b megasas_io_attach
+# b drivers/scsi/megaraid/megaraid_sas_base.c:7456
+# b acpi_dma_controller_register
+# b dma_async_device_register
+
+# b dg_ahci_init_one
+# b drivers/zcahci/dg_PCIeAHCI.c:1372
+# b drivers/zcahci/dg_PCIeAHCI.c:1392
+# b drivers/zcahci/dg_PCIeAHCI.c:1419
+# b dg_ahci_init_msi
+# b ata_host_activate
+# b dg_ahci_qc_prep
+
 c

@@ -60,3 +60,6 @@ disk/
 auto_ramdisk.img
 codesnip/bin
 *.d
+
+zcahci/
+dgahciback/
