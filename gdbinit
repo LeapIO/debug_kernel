@@ -39,7 +39,6 @@ target remote:1234
 # b drivers/zcahci/dg_PCIeAHCI.c:1392
 # b drivers/zcahci/dg_PCIeAHCI.c:1419
 # b dg_ahci_init_msi
-# b ata_host_activate
 # b dg_ahci_qc_prep
-
+b ata_scsi_add_hosts
 c
