@@ -85,8 +85,9 @@ NVME_PARAMETER := -drive file=$(BACKEDN_NVMe_PATH),if=none,id=D22 -device nvme,d
 # qemu模拟一个disk设备给busybox用
 # By default, interface is "ide" and index is automatically incremented
 # 	default is ide disk under scsi
+# https://wiki.gentoo.org/wiki/QEMU/Options#Hard_drive
 BACKEDN_DISK_PATH = $(DIR_CUR)/disk/disk.img
-DISK_PARAMETER := -drive file=$(BACKEDN_DISK_PATH)
+DISK_PARAMETER := -drive file=$(BACKEDN_DISK_PATH) -device ahci
 
 # qemu将主机的PCIe HBA通过vfio的方式传递给qemu内的虚拟机
 HBA_HOST := 0000:03:00.0  # 这个换了设备是需要update的

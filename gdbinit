@@ -40,5 +40,17 @@ target remote:1234
 # b drivers/zcahci/dg_PCIeAHCI.c:1419
 # b dg_ahci_init_msi
 # b dg_ahci_qc_prep
-b ata_scsi_add_hosts
+# b sata_pmp_eh_recover
+# b drivers/ata/libata-pmp.c:925
+# b drivers/ata/libata-pmp.c:963
+# b drivers/ata/libata-pmp.c:952
+# b dg_ahci_qc_issue
+# b drivers/ata/libata-eh.c:3670
+# b drivers/ata/libata-eh.c:3682
+# b drivers/ata/libata-eh.c:3699
+# b ata_scsi_add_hosts
+# b pci_bus_match
+# b zc_ahci_init_one
+# b drivers/zcahci/zcahci.c:216
+b ahci_qc_prep
 c
