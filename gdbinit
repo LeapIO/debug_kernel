@@ -52,5 +52,11 @@ target remote:1234
 # b pci_bus_match
 # b zc_ahci_init_one
 # b drivers/zcahci/zcahci.c:216
-b ahci_qc_prep
+# b ata_sg_setup
+# b ahci_configure_dma_masks
+# b zc_ahci_configure_dma_masks
+# b ahci_qc_prep
+# b drivers/zcahci/zcahci.c:150
+# b drivers/zcahci/zcahci.c:224
+# b intel_iommu_init
 c

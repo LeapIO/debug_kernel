@@ -21,6 +21,7 @@ MANUAL_RAMDISK = $(MANUAL_RAMDISK_DIR)/manual_ramdisk.img
 
 # start qemu
 QEMU = qemu-system-x86_64
+# -machine q35
 
 # qemu parameter
 # -kernel bzImage use 'bzImage' as kernel image
@@ -42,6 +43,9 @@ PARAMETER += -m 8G,slots=4,maxmem=16G \
 -object memory-backend-ram,id=mem1,size=2G \
 -object memory-backend-ram,id=mem2,size=2G \
 -object memory-backend-ram,id=mem3,size=2G
+# iommu
+# Currently only Q35 platform supports guest vIOMMU
+# PARAMETER += -device intel-iommu,intremap=on
 # 虚一下网卡，hostfwd 该选项可以把虚拟机端口 guest_port 映射到主机端口 host_port 上，从而实现外部对虚拟机的访问
 # 而其中的virtio类型是qemu-kvm对半虚拟化IO（virtio）驱动的支持
 # e1000代表的是网卡型号
@@ -86,8 +90,10 @@ NVME_PARAMETER := -drive file=$(BACKEDN_NVMe_PATH),if=none,id=D22 -device nvme,d
 # By default, interface is "ide" and index is automatically incremented
 # 	default is ide disk under scsi
 # https://wiki.gentoo.org/wiki/QEMU/Options#Hard_drive
+# -drive id=disk,file=IMAGE.img,if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0
 BACKEDN_DISK_PATH = $(DIR_CUR)/disk/disk.img
-DISK_PARAMETER := -drive file=$(BACKEDN_DISK_PATH) -device ahci
+# DISK_PARAMETER := -drive file=$(BACKEDN_DISK_PATH) -device ahci
+DISK_PARAMETER := -drive id=disk,file=$(BACKEDN_DISK_PATH),if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0
 
 # qemu将主机的PCIe HBA通过vfio的方式传递给qemu内的虚拟机
 HBA_HOST := 0000:03:00.0  # 这个换了设备是需要update的
@@ -127,7 +133,7 @@ dnvme:
 # 主要是要把主机的PCIe设备透传过来
 # $(HBA_PARAMETER_1)
 dhba:
-	$(QEMU) $(PARAMETER) $(HBA_PARAMETER_2)
+	$(QEMU) $(PARAMETER) $(HBA_PARAMETER_1) $(HBA_PARAMETER_2)
 
 # 利用mkinitramfs生成一个默认的initrmdisk
 # 这个在ubuntu的docker container中会有问题
