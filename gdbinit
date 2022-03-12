@@ -57,6 +57,6 @@ target remote:1234
 # b zc_ahci_configure_dma_masks
 # b ahci_qc_prep
 # b drivers/zcahci/zcahci.c:150
-# b drivers/zcahci/zcahci.c:224
+b drivers/zcahci/zcahci.c:149
 # b intel_iommu_init
 c

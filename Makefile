@@ -133,7 +133,7 @@ dnvme:
 # 主要是要把主机的PCIe设备透传过来
 # $(HBA_PARAMETER_1)
 dhba:
-	$(QEMU) $(PARAMETER) $(HBA_PARAMETER_1) $(HBA_PARAMETER_2)
+	$(QEMU) $(PARAMETER) $(HBA_PARAMETER_2)
 
 # 利用mkinitramfs生成一个默认的initrmdisk
 # 这个在ubuntu的docker container中会有问题
