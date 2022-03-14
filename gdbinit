@@ -4,4 +4,5 @@
 file /home/founder/hba/linux/linux/vmlinux
 # source /home/founder/hba/linux/linux/vmlinux-gdb.py
 target remote:1234
+b drivers/zcahci/zcahci.c:152
 c

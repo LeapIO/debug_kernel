@@ -1,13 +1,11 @@
 ## kernel_debug
 - A linux kernel debug env based on qemu and gdb
-<br>
 
 ### what you need
 1. linux kernel src (git clone from git@github.com:torvalds/linux.git)
 2. qemu
 3. cgdb
 4. ...
-<br>
 
 ### steps
 1. download linux kernel src and compile it to **vmlinux** (**with debug_info and no any install**)
