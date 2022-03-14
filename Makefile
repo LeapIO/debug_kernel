@@ -64,7 +64,8 @@ PARAMETER += -smp 4
 # PARAMETER += -cpu host
 # -S pause the kernel unit we continue in gdb
 # -s start gdbserver on port 1234
-PARAMETER += -s -S
+# -gdb tcp::1236 则可以指定其它gdbserver的监听端口
+PARAMETER += -gdb tcp::1236 -S
 
 # qemu 模拟 nvdimm 所需要的独立参数
 # the "nvdimm" machine option enables vNVDIMM feature
