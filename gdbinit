@@ -1,62 +1,7 @@
+# add your self vmlinux path here
 # file /home/doubled/double_D/linux/vmlinux
 # file /usr/src/linux/vmlinux
 file /home/founder/hba/linux/linux/vmlinux
-source /home/founder/hba/linux/linux/vmlinux-gdb.py
+# source /home/founder/hba/linux/linux/vmlinux-gdb.py
 target remote:1234
-# b start_kernel
-# open syscall
-# b do_sys_open if strcmp(filename,"open")==0  # always mode=0 or mode=436
-# b do_sys_open if strstr(filename,"opentest")
-# b do_sys_open if mode==438 && flags==32834
-# b do_sys_open if strcmp(filename,"/dev/dax0.0")==0
-# b do_sys_open if flags=32770
-# b ksys_mmap_pgoff
-# b acpi_nfit_init
-# chmod syscall
-# b do_fchmodat
-# b ata_scsi_scan_host
-# b blk_mq_init_sq_queue
-# b nvme_probe
-# b nvme_core_init
-# b nvme_pci_configure_admin_queue
-# b nvme_set_queue_count
-# b nvme_probe
-# b nvme_alloc_ns
-# b nvme_dev_add
-# b trace_sched_process_hang
-# b pci_arch_init
-# b drivers/scsi/mpt3sas/mpt3sas_scsih.c:10413
-# b _scsih_probe
-# b megasas_probe_one
-# b drivers/scsi/megaraid/megaraid_sas_base.c:7384
-# b megasas_io_attach
-# b drivers/scsi/megaraid/megaraid_sas_base.c:7456
-# b acpi_dma_controller_register
-# b dma_async_device_register
-
-# b dg_ahci_init_one
-# b drivers/zcahci/dg_PCIeAHCI.c:1372
-# b drivers/zcahci/dg_PCIeAHCI.c:1392
-# b drivers/zcahci/dg_PCIeAHCI.c:1419
-# b dg_ahci_init_msi
-# b dg_ahci_qc_prep
-# b sata_pmp_eh_recover
-# b drivers/ata/libata-pmp.c:925
-# b drivers/ata/libata-pmp.c:963
-# b drivers/ata/libata-pmp.c:952
-# b dg_ahci_qc_issue
-# b drivers/ata/libata-eh.c:3670
-# b drivers/ata/libata-eh.c:3682
-# b drivers/ata/libata-eh.c:3699
-# b ata_scsi_add_hosts
-# b pci_bus_match
-# b zc_ahci_init_one
-# b drivers/zcahci/zcahci.c:216
-# b ata_sg_setup
-# b ahci_configure_dma_masks
-# b zc_ahci_configure_dma_masks
-# b ahci_qc_prep
-# b drivers/zcahci/zcahci.c:150
-b drivers/zcahci/zcahci.c:149
-# b intel_iommu_init
 c

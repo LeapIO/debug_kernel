@@ -4,7 +4,7 @@
 # change kernel code, commit log:
 # 	populated kernel src + xxxxx
 
-# cgdb -q -x gdbinit q 与 x 的顺序还得必须是这样的
+# cgdb -q -x gdbinit
 
 # path
 DIR_CUR = $(shell pwd)
@@ -102,7 +102,7 @@ HBA_PARAMETER_2 := -device vfio-pci,host=$(HBA_HOST)
 
 .PHONY:help
 help:
-	@echo make dr  -- start debug kernel withnot dev
+	@echo make dr  -- start debug kernel without dev
 	@echo make dk  -- start debug kernel with a disk device in /dev
 	@echo make dn  -- start debug nvdimm with a nvdimm device in /dev
 	@echo make dnvme  -- start debug nvme ssd with a nvme ssd device in /dev
