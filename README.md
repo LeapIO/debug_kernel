@@ -18,7 +18,7 @@
 7. More details are in Makefile, you can choose kinds of blocks (**ahci disk, nemv ssd, nvdimm, etc.**) to debug corresponding driver and all parts in kernel, you can gen **backend storage file** by Makefile
 
 ### features (details are in Makefile)
-1. debug kernel without blokc dev
+1. debug kernel without block dev
 2. debug kernel with a **ahci disk device** in `/dev`
 3. debug nvdimm with a **nvdimm device** in `/dev`
 4. debug nvme ssd with a **nvme ssd device** in `/dev`
