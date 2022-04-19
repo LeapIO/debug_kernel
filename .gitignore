@@ -63,3 +63,4 @@ codesnip/bin
 
 zcahci/
 dgahci/
+build_ramdisk/initrmfs/double_D/test_xpdma
