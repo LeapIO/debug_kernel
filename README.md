@@ -13,7 +13,8 @@
 3. `cd debug_kernel` && `make mad` (**details are in Makefile**)
     - gen manual `ramdisk.img` including busybox with the **most basic linux cmd**
 4. `cd debug_kernel` && `make dr`
-5. **edit gdbinit** and **replace** the path of vmlinux of yours
+5. **edit** file **gdbinit** in first level and **replace** `target remote:1236` of yours
+    - **1236 is the gdbserver listen port, corresponding to the port you specify in Makefile**
 6. **cgdb -q -x gdbinit**
 7. More details are in Makefile, you can choose kinds of blocks (**ahci disk, nemv ssd, nvdimm, etc.**) to debug corresponding driver and all parts in kernel, you can gen **backend storage file** by Makefile
 
@@ -27,3 +28,5 @@
 ### cgdb
 
 ### To be continued ...
+<br>
+<br>
