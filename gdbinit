@@ -1,7 +1,7 @@
 # add your self vmlinux path here
 # file /home/doubled/double_D/linux/vmlinux
 # file /usr/src/linux/vmlinux
-file /home/founder/hba/linux/linux/vmlinux
+# file /home/founder/hba/linux/linux/vmlinux
 # source /home/founder/hba/linux/linux/vmlinux-gdb.py
 target remote:1236
 #b arch/x86/boot/compressed/head_64.S:172
