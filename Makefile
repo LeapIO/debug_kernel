@@ -50,8 +50,8 @@ PARAMETER += -m 8G,slots=4,maxmem=16G \
 # 而其中的virtio类型是qemu-kvm对半虚拟化IO（virtio）驱动的支持
 # e1000代表的是网卡型号
 # https://blog.51cto.com/u_15077545/3985916
-PARAMETER += -net nic,model=e1000 \
--net user,hostfwd=tcp::2222-:22
+# PARAMETER += -net nic,model=e1000 \
+# -net user,hostfwd=tcp::2222-:22
 # 指定 qemu 虚拟机的核心数 并且指定 numa node topology
 # https://futurewei-cloud.github.io/ARM-Datacenter/qemu/how-to-configure-qemu-numa-nodes/
 PARAMETER += -smp 4 
@@ -97,7 +97,7 @@ BACKEDN_DISK_PATH = $(DIR_CUR)/disk/disk.img
 DISK_PARAMETER := -drive id=disk,file=$(BACKEDN_DISK_PATH),if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0
 
 # qemu将主机的PCIe HBA通过vfio的方式传递给qemu内的虚拟机
-HBA_HOST := 0000:03:00.0  # 这个换了设备是需要update的
+HBA_HOST := 0000:01:00.0  # 这个换了设备是需要update的
 HBA_PARAMETER_1 := --enable-kvm  # 如果有这个参数则需要hbreak打硬件断点才可以
 HBA_PARAMETER_2 := -device vfio-pci,host=$(HBA_HOST)
 
