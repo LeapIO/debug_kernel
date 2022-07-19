@@ -97,7 +97,8 @@ BACKEDN_DISK_PATH = $(DIR_CUR)/disk/disk.img
 DISK_PARAMETER := -drive id=disk,file=$(BACKEDN_DISK_PATH),if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0
 
 # qemu将主机的PCIe HBA通过vfio的方式传递给qemu内的虚拟机
-HBA_HOST := 0000:01:00.0  # 这个换了设备是需要update的
+#HBA_HOST := 0000:01:00.0  # 这个换了设备是需要update的
+HBA_HOST := 0000:$(shell lspci -d 10ee: | awk '{print $$1}')  # 只试用于主机上插了一张卡，多个卡时，还需按上面一行的指定具体哪张……
 HBA_PARAMETER_1 := --enable-kvm  # 如果有这个参数则需要hbreak打硬件断点才可以
 HBA_PARAMETER_2 := -device vfio-pci,host=$(HBA_HOST)
 
