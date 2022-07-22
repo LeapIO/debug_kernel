@@ -161,7 +161,7 @@ gnvdimm:
 # @ 一行只能有一个
 # makefile中每一行都是一个单独的进程
 mad: 
-	@cd $(GEN_MANUAL_RAMDISK_DIR) && sh $(GEN_MANUAL_RAMDISK_SHELL)
+	@cd $(GEN_MANUAL_RAMDISK_DIR) && bash $(GEN_MANUAL_RAMDISK_SHELL)
 
 .PHONY:test
 test:
