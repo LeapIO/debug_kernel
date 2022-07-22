@@ -50,8 +50,8 @@ PARAMETER += -m 8G,slots=4,maxmem=16G \
 # 而其中的virtio类型是qemu-kvm对半虚拟化IO（virtio）驱动的支持
 # e1000代表的是网卡型号
 # https://blog.51cto.com/u_15077545/3985916
-# PARAMETER += -net nic,model=e1000 \
-# -net user,hostfwd=tcp::2222-:22
+PARAMETER += -net nic,model=e1000 \
+ -net user,hostfwd=tcp::2222-:22
 # 指定 qemu 虚拟机的核心数 并且指定 numa node topology
 # https://futurewei-cloud.github.io/ARM-Datacenter/qemu/how-to-configure-qemu-numa-nodes/
 PARAMETER += -smp 4 
