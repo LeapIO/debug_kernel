@@ -7,6 +7,7 @@ mkdir -p etc/init.d
 sudo chmod 755 etc/init.d/rcS
 sudo chmod 755 etc/inittab
 sudo cp -a /dev/{null,console,tty,tty1,tty2,tty3,tty4} dev/
+#sudo cp -a /etc/{hosts,resolv.conf,nsswitch.conf} etc/
 sudo cp -rf ../busybox-1.32.1/_install/linuxrc ./
 cd dev
 mknod console c 5 1

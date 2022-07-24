@@ -1,0 +1,6 @@
+#!/bin/sh
+sudo iptables -t nat -D POSTROUTING -s 192.168.5.0/24 -o ens33 -j MASQUERADE
+sudo netfilter-persistent save
+sudo iptables -t nat -L
+sudo ifconfig $1 down
+sudo ip link delete $1
