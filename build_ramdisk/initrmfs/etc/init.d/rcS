@@ -1,12 +1,12 @@
 echo -e "Welcome to Linux"
-/bin/mount -a
-echo -e "Remounting the root filesystem"
-mount -o remount,rw /
-mkdir -p /dev/pts
-mount -t devpts devpts /dev/pts
-echo -p /proc/sys/kernel/hotplug
+# /bin/mount -a
+# echo -e "Remounting the root filesystem"
+# mount -o remount,rw /
+# mkdir -p /dev/pts
+# mount -t devpts devpts /dev/pts
+# echo -p /proc/sys/kernel/hotplug
 
-ifconfig eth0 192.168.5.61
-route add default gw 192.168.5.161 dev eth0
-ifconfig lo up
-mdev -s
+# ifconfig eth0 192.168.5.61
+# route add default gw 192.168.5.161 dev eth0
+# ifconfig lo up
+# mdev -s

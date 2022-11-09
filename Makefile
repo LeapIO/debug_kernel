@@ -51,7 +51,7 @@ PARAMETER += -m 8G,slots=4,maxmem=16G \
 # https://blog.51cto.com/u_15077545/3985916
 #PARAMETER += -net nic,model=e1000 \
 # -net user,hostfwd=tcp::2222-:22
-PARAMETER += -net nic -net tap,ifname=tap0,script=no,downscript=net_exit 
+# PARAMETER += -net nic -net tap,ifname=tap0,script=no,downscript=net_exit 
 #-nic tap,ifname=tap0 
 # 指定 qemu 虚拟机的核心数 并且指定 numa node topology
 # https://futurewei-cloud.github.io/ARM-Datacenter/qemu/how-to-configure-qemu-numa-nodes/
@@ -124,7 +124,7 @@ help:
 	@echo make gnvdimm -- gen nvdimm file
 
 dr:
-	bash net_init
+#	bash net_init
 	$(QEMU) $(PARAMETER)
 # default target and cgdb -q -x gdbinit in another termianl
 # dk means means debug kernel
