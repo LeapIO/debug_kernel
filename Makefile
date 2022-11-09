@@ -69,11 +69,11 @@ PARAMETER += -gdb tcp::1234 -S
 
 # qemu 模拟 nvdimm 所需要的独立参数
 # the "nvdimm" machine option enables vNVDIMM feature
-NVDIMM_PARAMETER := -machine pc,nvdimm
+NVDIMM_PARAMETER := -machine pc,nvdimm=on
 BACKEDN_NVDIMM1_PATH = $(DIR_CUR)/nvdimm/nvdimmdaxfile
-NVDIMM_PARAMETER += -object memory-backend-file,id=mem1,share=on,mem-path=$(BACKEDN_NVDIMM1_PATH),size=4G,align=2M
+NVDIMM_PARAMETER += -object memory-backend-file,id=mem4,share=on,mem-path=$(BACKEDN_NVDIMM1_PATH),size=4G,align=2M
 # mem1的4G后备存储设备是host中的基于ext4文件系统的文件
-NVDIMM_PARAMETER += -device nvdimm,id=nv1,memdev=mem1
+NVDIMM_PARAMETER += -device nvdimm,id=nv1,memdev=mem4
 
 # https://qemu-project.gitlab.io/qemu/system/devices/nvme.html?highlight=nvme
 # 	qemu 文档 nvme 参数
@@ -85,7 +85,7 @@ NVDIMM_PARAMETER += -device nvdimm,id=nv1,memdev=mem1
 # 	Set the maximum number of allowed I/O queue pairs IO 队列的数量确实是SSD所决定的，包括每一个队列的队列深度，位于pcie的bar空间上
 #	实际上这个值在驱动初始化的是是可以作为 参数 给进去的
 BACKEDN_NVMe_PATH = $(DIR_CUR)/nvme/nvme.img
-NVME_PARAMETER := -drive file=$(BACKEDN_NVMe_PATH),if=none,id=D22 -device nvme,drive=D22,serial=1234,num_queues=128
+NVME_PARAMETER := -drive file=$(BACKEDN_NVMe_PATH),format=raw,if=none,id=D22 -device nvme,drive=D22,serial=1234,max_ioqpairs=128
 
 # qemu模拟一个disk设备给busybox用
 # By default, interface is "ide" and index is automatically incremented
@@ -94,7 +94,7 @@ NVME_PARAMETER := -drive file=$(BACKEDN_NVMe_PATH),if=none,id=D22 -device nvme,d
 # -drive id=disk,file=IMAGE.img,if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0
 BACKEDN_DISK_PATH = $(DIR_CUR)/disk/disk.img
 # DISK_PARAMETER := -drive file=$(BACKEDN_DISK_PATH) -device ahci
-DISK_PARAMETER := -drive id=disk,file=$(BACKEDN_DISK_PATH),if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0
+DISK_PARAMETER := -drive id=disk,file=$(BACKEDN_DISK_PATH),format=raw,if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0
 
 # qemu将主机的PCIe HBA通过vfio的方式传递给qemu内的虚拟机
 #HBA_HOST := 0000:01:00.0  # 这个换了设备是需要update的
