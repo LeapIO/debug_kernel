@@ -99,7 +99,14 @@ DISK_PARAMETER := -drive id=disk,file=$(BACKEDN_DISK_PATH),format=raw,if=none -d
 # qemu将主机的PCIe HBA通过vfio的方式传递给qemu内的虚拟机
 #HBA_HOST := 0000:01:00.0  # 这个换了设备是需要update的
 HBA_HOST := 0000:$(shell lspci -d 10ee: | awk '{print $$1}')  # 只试用于主机上插了一张卡，多个卡时，还需按上面一行的指定具体哪张……
-HBA_PARAMETER_1 := --enable-kvm  # 如果有这个参数则需要hbreak打硬件断点才可以
+# HBA_PARAMETER_1 := --enable-kvm  # 如果有这个参数则需要hbreak打硬件断点才可以
+HBA_PARAMETER_1 += -cpu host
+HBA_PARAMETER_1 += -machine q35,accel=kvm,kernel-irqchip=split
+HBA_PARAMETER_1 += -device intel-iommu,intremap=on,caching-mode=on # 重点是intremap参数，其他参数是为开启这项参数服务的
+# 想要在qemu中使用多个msi中断向量，需要使用intel-iommu的中断重映射
+# 重点是要开启iommu中的intremap, 除了宿主机上需要开启iommu,还有两个地方需要配置
+# qemu启动参数配置中需要令intremap=on, 编译虚拟机的内核镜像时也需要开启IOMMU
+# Device Drivers->IOMMU Hardware Support->Support for Interrupt Remapping
 HBA_PARAMETER_2 := -device vfio-pci,host=$(HBA_HOST)
 
 .PHONY:help
@@ -135,7 +142,7 @@ dnvme:
 # 主要是要把主机的PCIe设备透传过来
 # $(HBA_PARAMETER_1)
 dhba:
-	$(QEMU) $(PARAMETER) $(HBA_PARAMETER_2)
+	$(QEMU) $(PARAMETER) $(HBA_PARAMETER_1) $(HBA_PARAMETER_2)
 
 # 利用mkinitramfs生成一个默认的initrmdisk
 # 这个在ubuntu的docker container中会有问题
