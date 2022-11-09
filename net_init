@@ -1,0 +1,16 @@
+#!/bin/sh
+sudo echo 1 > /proc/sys/net/ipv4/ip_forward
+#sudo ifconfig  192.168.5.161
+
+sudo ip tuntap add dev tap0 mode tap
+sudo ip link set dev tap0 up
+sleep 1s
+
+
+sudo ip address add dev tap0 192.168.5.161
+
+sudo route add -net 192.168.5.0 netmask 255.255.255.0 dev tap0
+
+sudo iptables -t nat -A POSTROUTING -s 192.168.5.0/24 -o ens33 -j MASQUERADE
+sudo netfilter-persistent save
+

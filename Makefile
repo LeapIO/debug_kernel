@@ -21,17 +21,16 @@ MANUAL_RAMDISK = $(MANUAL_RAMDISK_DIR)/manual_ramdisk.img
 
 # start qemu
 QEMU = qemu-system-x86_64
-# -machine q35
 
 # qemu parameter
 # -kernel bzImage use 'bzImage' as kernel image
-PARAMETER := -kernel $(BZIMAGE)
+PARAMETER := -kernel $(BZIMAGE) 
 # PARAMETER += -hda $(HDIMG)
 # nographic disable graphical output and redirect serial I/Os to console
-PARAMETER += -nographic
+PARAMETER += -nographic 
 # -initrd file    use 'file' as initial ram disk
 # PARAMETER += -initrd $(AUTO_RAMDISK)
-PARAMETER += -initrd $(MANUAL_RAMDISK)
+PARAMETER += -initrd $(MANUAL_RAMDISK) 
 # -append cmdline use 'cmdline' as kernel command line
 PARAMETER += -append "console=ttyS0 nokaslr"  # kernel cmdline
 # i meet a problem, Could not access KVM kernel module: No such file or directory
@@ -42,7 +41,7 @@ PARAMETER += -m 8G,slots=4,maxmem=16G \
 -object memory-backend-ram,id=mem0,size=2G \
 -object memory-backend-ram,id=mem1,size=2G \
 -object memory-backend-ram,id=mem2,size=2G \
--object memory-backend-ram,id=mem3,size=2G
+-object memory-backend-ram,id=mem3,size=2G 
 # iommu
 # Currently only Q35 platform supports guest vIOMMU
 # PARAMETER += -device intel-iommu,intremap=on
@@ -50,8 +49,10 @@ PARAMETER += -m 8G,slots=4,maxmem=16G \
 # 而其中的virtio类型是qemu-kvm对半虚拟化IO（virtio）驱动的支持
 # e1000代表的是网卡型号
 # https://blog.51cto.com/u_15077545/3985916
-# PARAMETER += -net nic,model=e1000 \
+#PARAMETER += -net nic,model=e1000 \
 # -net user,hostfwd=tcp::2222-:22
+PARAMETER += -net nic -net tap,ifname=tap0,script=no,downscript=net_exit 
+#-nic tap,ifname=tap0 
 # 指定 qemu 虚拟机的核心数 并且指定 numa node topology
 # https://futurewei-cloud.github.io/ARM-Datacenter/qemu/how-to-configure-qemu-numa-nodes/
 PARAMETER += -smp 4 
@@ -123,8 +124,8 @@ help:
 	@echo make gnvdimm -- gen nvdimm file
 
 dr:
+	bash net_init
 	$(QEMU) $(PARAMETER)
-
 # default target and cgdb -q -x gdbinit in another termianl
 # dk means means debug kernel
 dk:
@@ -168,7 +169,7 @@ gnvdimm:
 # @ 一行只能有一个
 # makefile中每一行都是一个单独的进程
 mad: 
-	@cd $(GEN_MANUAL_RAMDISK_DIR) && sh $(GEN_MANUAL_RAMDISK_SHELL)
+	@cd $(GEN_MANUAL_RAMDISK_DIR) && bash $(GEN_MANUAL_RAMDISK_SHELL)
 
 .PHONY:test
 test:
