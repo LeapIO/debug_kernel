@@ -14,4 +14,5 @@ target remote:1234
 # b drivers/scsi/libsas/sas_init.c:153
 # b sas_form_port
 # b leapio_sas_port_formed
+# b msi_domain_alloc_irqs_descs_locked
 c

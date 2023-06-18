@@ -86,7 +86,10 @@ NVDIMM_PARAMETER += -device nvdimm,id=nv1,memdev=mem4
 # 	Set the maximum number of allowed I/O queue pairs IO 队列的数量确实是SSD所决定的，包括每一个队列的队列深度，位于pcie的bar空间上
 #	实际上这个值在驱动初始化的是是可以作为 参数 给进去的
 BACKEDN_NVMe_PATH = $(DIR_CUR)/nvme/nvme.img
-NVME_PARAMETER := -drive file=$(BACKEDN_NVMe_PATH),format=raw,if=none,id=D22 -device nvme,drive=D22,serial=1234,max_ioqpairs=128
+# BACKEDN_NVMe_PATH_1 = $(DIR_CUR)/nvme/nvme1.img
+NVME_PARAMETER := -drive file=$(BACKEDN_NVMe_PATH),format=raw,if=none,id=D22 -device nvme,drive=D22,serial=1234
+#   -drive file=$(BACKEDN_NVMe_PATH_1),format=raw,if=none,id=D23 -device nvme,drive=D23,serial=1235
+#,max_ioqpairs=128
 
 # qemu模拟一个disk设备给busybox用
 # By default, interface is "ide" and index is automatically incremented
