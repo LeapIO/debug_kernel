@@ -100,6 +100,18 @@ BACKEDN_DISK_PATH = $(DIR_CUR)/disk/disk.img
 # DISK_PARAMETER := -drive file=$(BACKEDN_DISK_PATH) -device ahci
 DISK_PARAMETER := -drive id=disk,file=$(BACKEDN_DISK_PATH),format=raw,if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0
 
+
+# qemu模拟2个接到megasas的disk设备
+# https://blogs.oracle.com/linux/post/how-to-emulate-block-devices-with-qemu
+# 必须配置MEGARAID_SAS=y
+BACKEDN_DISK0_PATH = $(DIR_CUR)/disk/disk0.img
+BACKEDN_DISK1_PATH = $(DIR_CUR)/disk/disk1.img
+MEGASAS_PARAMETER := -device megasas,id=scsi0 \
+					-device scsi-hd,drive=drive0,bus=scsi0.0,channel=0,scsi-id=0,lun=0 \
+					-drive file=$(BACKEDN_DISK0_PATH),format=raw,if=none,id=drive0 \
+					-device scsi-hd,drive=drive1,bus=scsi0.0,channel=0,scsi-id=1,lun=0 \
+					-drive file=$(BACKEDN_DISK1_PATH),format=raw,if=none,id=drive1
+
 # qemu将主机的PCIe HBA通过vfio的方式传递给qemu内的虚拟机
 #HBA_HOST := 0000:01:00.0  # 这个换了设备是需要update的
 HBA_HOST := 0000:$(shell lspci -d 10ee: | awk '{print $$1}')  # 只试用于主机上插了一张卡，多个卡时，还需按上面一行的指定具体哪张……
@@ -117,12 +129,14 @@ HBA_PARAMETER_2 := -device vfio-pci,host=$(HBA_HOST)
 help:
 	@echo make dr  -- start debug kernel without dev
 	@echo make dk  -- start debug kernel with a disk device in /dev
+	@echo make dmega  -- start debug kernel with a disk device in /dev connect by megasas
 	@echo make dn  -- start debug nvdimm with a nvdimm device in /dev
 	@echo make dnvme  -- start debug nvme ssd with a nvme ssd device in /dev
 	@echo make dhba  -- start debug pcie scsi host, hba
 	@echo make mad -- gen manual ramdisk.img
 	@echo make aud -- gen auto ramdisk.img
 	@echo make gdk -- gen disk.img
+	@echo make gmega -- gen two disk.img
 	@echo make gnvme -- gen nvme.img
 	@echo make gnvdimm -- gen nvdimm file
 
@@ -131,6 +145,11 @@ dr:
 	$(QEMU) $(PARAMETER)
 # default target and cgdb -q -x gdbinit in another termianl
 # dk means means debug kernel
+
+dmega:
+# must set MEGARAID_SAS=y
+	$(QEMU) $(PARAMETER) $(MEGASAS_PARAMETER)
+
 dk:
 	$(QEMU) $(PARAMETER) $(DISK_PARAMETER)
 
@@ -159,6 +178,11 @@ aud:
 GEN_DISK_BACKEND = $(shell mkdir -p disk && dd if=/dev/zero of=./disk/disk.img bs=2048 count=1024K)
 gdk:
 	@echo $(GEN_DISK_BACKEND)
+	
+
+gmega:
+	@echo $(shell mkdir -p disk && dd if=/dev/zero of=./disk/disk0.img bs=2048 count=1024K)
+	@echo $(shell mkdir -p disk && dd if=/dev/zero of=./disk/disk1.img bs=2048 count=1024K)
 
 GEN_NVME_BACKEND = $(shell mkdir -p nvme && dd if=/dev/zero of=./nvme/nvme.img bs=2048 count=4096K)
 gnvme:
