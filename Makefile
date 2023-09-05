@@ -10,6 +10,8 @@
 DIR_CUR = $(shell pwd)
 KERNEL_ROOT = $(DIR_CUR)/../
 BZIMAGE = $(KERNEL_ROOT)/arch/x86/boot/bzImage
+OVMF = $(KERNEL_ROOT)/edk2/Build/OvmfX64/DEBUG_GCC5/FV/OVMF.fd
+BIOS = $(DIR_CUR)/bios.bin
 # mkinitramfs -o auto_ramdisk.img
 AUTO_RAMDISK = $(DIR_CUR)/auto_ramdisk.img
 # manual initrmfs
@@ -30,18 +32,21 @@ PARAMETER := -kernel $(BZIMAGE)
 PARAMETER += -nographic 
 # -initrd file    use 'file' as initial ram disk
 # PARAMETER += -initrd $(AUTO_RAMDISK)
-PARAMETER += -initrd $(MANUAL_RAMDISK) 
+PARAMETER += -initrd $(MANUAL_RAMDISK)
 # -append cmdline use 'cmdline' as kernel command line
 PARAMETER += -append "console=ttyS0 nokaslr"  # kernel cmdline
 # i meet a problem, Could not access KVM kernel module: No such file or directory
 # maybe i need to enter bios to enable virtualization
 # PARAMETER += --enable-kvm
 # -m configure guest RAM 客户机
-PARAMETER += -m 8G,slots=4,maxmem=16G \
--object memory-backend-ram,id=mem0,size=2G \
--object memory-backend-ram,id=mem1,size=2G \
--object memory-backend-ram,id=mem2,size=2G \
--object memory-backend-ram,id=mem3,size=2G 
+PARAMETER += -m 8G
+# 简化一下逻辑先
+# ,slots=4,maxmem=16G \
+# -object memory-backend-ram,id=mem0,size=2G \
+# -object memory-backend-ram,id=mem1,size=2G \
+# -object memory-backend-ram,id=mem2,size=2G \
+# -object memory-backend-ram,id=mem3,size=2G
+
 # iommu
 # Currently only Q35 platform supports guest vIOMMU
 # PARAMETER += -device intel-iommu,intremap=on
@@ -55,7 +60,7 @@ PARAMETER += -m 8G,slots=4,maxmem=16G \
 #-nic tap,ifname=tap0 
 # 指定 qemu 虚拟机的核心数 并且指定 numa node topology
 # https://futurewei-cloud.github.io/ARM-Datacenter/qemu/how-to-configure-qemu-numa-nodes/
-PARAMETER += -smp 4 
+PARAMETER += -smp 4
 #\#
 # -numa node,memdev=mem0,cpus=0-3,nodeid=0 \#
 # -numa node,memdev=mem1,cpus=4-7,nodeid=1 \#
@@ -67,6 +72,9 @@ PARAMETER += -smp 4
 # -s start gdbserver on port 1234
 # -gdb tcp::1236 则可以指定其它gdbserver的监听端口
 PARAMETER += -gdb tcp::1234 -S
+
+# 使用edk2编译出来的bios
+PARAMETER += -bios $(BIOS)
 
 # qemu 模拟 nvdimm 所需要的独立参数
 # the "nvdimm" machine option enables vNVDIMM feature
@@ -100,7 +108,6 @@ BACKEDN_DISK_PATH = $(DIR_CUR)/disk/disk.img
 # DISK_PARAMETER := -drive file=$(BACKEDN_DISK_PATH) -device ahci
 DISK_PARAMETER := -drive id=disk,file=$(BACKEDN_DISK_PATH),format=raw,if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0
 
-
 # qemu模拟2个接到megasas的disk设备
 # https://blogs.oracle.com/linux/post/how-to-emulate-block-devices-with-qemu
 # 必须配置MEGARAID_SAS=y
@@ -113,9 +120,9 @@ MEGASAS_PARAMETER := -device megasas,id=scsi0 \
 					-drive file=$(BACKEDN_DISK1_PATH),format=raw,if=none,id=drive1
 
 # qemu将主机的PCIe HBA通过vfio的方式传递给qemu内的虚拟机
-#HBA_HOST := 0000:01:00.0  # 这个换了设备是需要update的
-HBA_HOST := 0000:$(shell lspci -d 10ee: | awk '{print $$1}')  # 只试用于主机上插了一张卡，多个卡时，还需按上面一行的指定具体哪张……
-# HBA_PARAMETER_1 := --enable-kvm  # 如果有这个参数则需要hbreak打硬件断点才可以
+HBA_HOST := 0000:02:00.0  # 这个换了设备是需要update的
+#HBA_HOST := 0000:$(shell lspci -d 10ee: | awk '{print $$1}')  # 只试用于主机上插了一张卡，多个卡时，还需按上面一行的指定具体哪张……
+#HBA_PARAMETER_1 := --enable-kvm  # 如果有这个参数则需要hbreak打硬件断点才可以
 HBA_PARAMETER_1 += -cpu host
 HBA_PARAMETER_1 += -machine q35,accel=kvm,kernel-irqchip=split
 HBA_PARAMETER_1 += -device intel-iommu,intremap=on,caching-mode=on # 重点是intremap参数，其他参数是为开启这项参数服务的
@@ -140,63 +147,81 @@ help:
 	@echo make gnvme -- gen nvme.img
 	@echo make gnvdimm -- gen nvdimm file
 
+.PHONY:dr
 dr:
 #	bash net_init
 	$(QEMU) $(PARAMETER)
 # default target and cgdb -q -x gdbinit in another termianl
 # dk means means debug kernel
 
+.PHONY:dmega
 dmega:
 # must set MEGARAID_SAS=y
 	$(QEMU) $(PARAMETER) $(MEGASAS_PARAMETER)
 
+.PHONY:dk
 dk:
 	$(QEMU) $(PARAMETER) $(DISK_PARAMETER)
 
 # debug nvdimm
+.PHONY:dn
 dn:
 	$(QEMU) $(PARAMETER) $(NVDIMM_PARAMETER)
 
 # debug nvme ssd
+.PHONY:dnvme
 dnvme:
 	$(QEMU) $(PARAMETER) $(NVME_PARAMETER)
 
 # debug pci hba scsi
 # 主要是要把主机的PCIe设备透传过来
 # $(HBA_PARAMETER_1)
+.PHONY:dhba
 dhba:
 	$(QEMU) $(PARAMETER) $(HBA_PARAMETER_1) $(HBA_PARAMETER_2)
 
 # 利用mkinitramfs生成一个默认的initrmdisk
 # 这个在ubuntu的docker container中会有问题
 GEN_AUTO_RAMDISK = $(shell mkinitramfs -o auto_ramdisk.img)
+.PHONY:aud
 aud:
 	@echo $(GEN_AUTO_RAMDISK)
 
 # 8G
 # mac 2G
+.PHONY:gdk
 GEN_DISK_BACKEND = $(shell mkdir -p disk && dd if=/dev/zero of=./disk/disk.img bs=2048 count=1024K)
 gdk:
 	@echo $(GEN_DISK_BACKEND)
-	
 
+# megasas 关键在于qemu的hw目录有支持
+.PHONY:gmega
 gmega:
 	@echo $(shell mkdir -p disk && dd if=/dev/zero of=./disk/disk0.img bs=2048 count=1024K)
 	@echo $(shell mkdir -p disk && dd if=/dev/zero of=./disk/disk1.img bs=2048 count=1024K)
 
 GEN_NVME_BACKEND = $(shell mkdir -p nvme && dd if=/dev/zero of=./nvme/nvme.img bs=2048 count=4096K)
+.PHONY:gnvme
 gnvme:
 	@echo $(GEN_NVME_BACKEND)
 
 GEN_NVDIMM_BACKEND = $(shell mkdir -p nvdimm && truncate -s 8G nvdimmdaxfile)
+.PHONY:gnvdimm
 gnvdimm:
 	@echo $(GEN_NVDIMM_BACKEND)
 
 # 利用busybox手动生成initrmfs，需要在initrmfs下执行
 # @ 一行只能有一个
 # makefile中每一行都是一个单独的进程
+.PHONY:mad
 mad: 
 	@cd $(GEN_MANUAL_RAMDISK_DIR) && bash $(GEN_MANUAL_RAMDISK_SHELL)
+
+# bios.bin是uefi编译的产出，该脚本不管这个的生成
+CP_BIOS = $(shell cp $(OVMF) bios.bin)
+.PHONY:gbios
+gbios:
+	@echo $(CP_BIOS)
 
 .PHONY:test
 test:
