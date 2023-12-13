@@ -1,5 +1,7 @@
 file ../vmlinux
 source ../vmlinux-gdb.py
+# add-auto-load-safe-path /path/to/linux-build
+lx-symbols
 target remote:1234
 # b start_kernel
 # b scsi_probe_and_add_lun

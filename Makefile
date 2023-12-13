@@ -74,7 +74,9 @@ PARAMETER += -smp 4
 PARAMETER += -gdb tcp::1234 -S
 
 # 使用edk2编译出来的bios
-PARAMETER += -bios $(BIOS)
+ifneq ($(wildcard $(BIOS)),)
+	PARAMETER += -bios $(BIOS)
+endif
 
 # qemu 模拟 nvdimm 所需要的独立参数
 # the "nvdimm" machine option enables vNVDIMM feature
@@ -120,7 +122,7 @@ MEGASAS_PARAMETER := -device megasas,id=scsi0 \
 					-drive file=$(BACKEDN_DISK1_PATH),format=raw,if=none,id=drive1
 
 # qemu将主机的PCIe HBA通过vfio的方式传递给qemu内的虚拟机
-HBA_HOST := 0000:02:00.0  # 这个换了设备是需要update的
+HBA_HOST := 0000:01:00.0  # 这个换了设备是需要update的
 #HBA_HOST := 0000:$(shell lspci -d 10ee: | awk '{print $$1}')  # 只试用于主机上插了一张卡，多个卡时，还需按上面一行的指定具体哪张……
 #HBA_PARAMETER_1 := --enable-kvm  # 如果有这个参数则需要hbreak打硬件断点才可以
 HBA_PARAMETER_1 += -cpu host
@@ -140,12 +142,14 @@ help:
 	@echo make dn  -- start debug nvdimm with a nvdimm device in /dev
 	@echo make dnvme  -- start debug nvme ssd with a nvme ssd device in /dev
 	@echo make dhba  -- start debug pcie scsi host, hba
+	@echo make draid -- start debug megaraid module
 	@echo make mad -- gen manual ramdisk.img
 	@echo make aud -- gen auto ramdisk.img
 	@echo make gdk -- gen disk.img
 	@echo make gmega -- gen two disk.img
 	@echo make gnvme -- gen nvme.img
 	@echo make gnvdimm -- gen nvdimm file
+
 
 .PHONY:dr
 dr:
@@ -179,6 +183,14 @@ dnvme:
 .PHONY:dhba
 dhba:
 	$(QEMU) $(PARAMETER) $(HBA_PARAMETER_1) $(HBA_PARAMETER_2)
+
+# debug module, 对加载的module打断点
+# GDB_SCRIPTS [=y]
+# source ../vmlinux-gdb.py
+# lx-symbols
+.PHONY:draid
+draid:
+	$(QEMU) $(PARAMETER) $(HBA_PARAMETER_2)
 
 # 利用mkinitramfs生成一个默认的initrmdisk
 # 这个在ubuntu的docker container中会有问题
